@@ -1,0 +1,12 @@
+body{
+    background-color: black;
+
+    margin: 0;
+    padding-top: 10px;
+    display: flex;
+    /* This centers our sketch horizontally. */
+    justify-content: center;
+
+    /* This centers our sketch vertically. */
+    align-items: center;
+}
