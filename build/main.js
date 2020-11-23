@@ -20,6 +20,7 @@ var WindowSize = {
 };
 var snake;
 var apple;
+var keysPressed = [];
 var GameObject = /** @class */ (function () {
     function GameObject(PosX, PosY) {
         this.PosX = PosX;
@@ -70,7 +71,6 @@ var Snake = /** @class */ (function (_super) {
     Snake.prototype.Draw = function () {
         fill(40, 200, 15);
         rect(this.PosX * (cellSize), this.PosY * (cellSize), cellSize, cellSize, 5);
-        //console.log([this.PosX*(cellSize), this.PosY*(cellSize)])
         this.Trails.push(new Trail(this.PosX, this.PosY));
         while (this.Trails.length > this.TrailAmount) {
             this.Trails.shift();
@@ -87,7 +87,35 @@ var Snake = /** @class */ (function (_super) {
             if (trail.PosX == apple.PosX && trail.PosY == apple.PosY)
                 apple.changePosition();
         });
-        console.log([this.PosX, this.PosY]);
+        for (var i = 0; i <= keysPressed.length; i++) {
+            switch (keysPressed[i]) {
+                case 87:
+                    if (snake.VelY != 1) {
+                        snake.VelX = 0;
+                        snake.VelY = -1;
+                    }
+                    break;
+                case 83:
+                    if (snake.VelY != -1) {
+                        snake.VelX = 0;
+                        snake.VelY = 1;
+                    }
+                    break;
+                case 65:
+                    if (snake.VelX != 1) {
+                        snake.VelX = -1;
+                        snake.VelY = 0;
+                    }
+                    break;
+                case 68:
+                    if (snake.VelX != -1) {
+                        snake.VelX = 1;
+                        snake.VelY = 0;
+                    }
+                    break;
+            }
+            keysPressed.splice(0, 1);
+        }
         if (this.PosX < 0)
             this.PosX = WindowSize["Width"] / cellSize;
         if (this.PosX > WindowSize["Width"] / cellSize)
@@ -108,7 +136,7 @@ function setup() {
     apple = new Apple(0, 0);
     apple.changePosition();
     createCanvas(WindowSize["Width"], WindowSize["Height"]);
-    frameRate(15);
+    frameRate(20);
 }
 function draw() {
     if (!gameover) {
@@ -124,34 +152,10 @@ function draw() {
     }
 }
 function keyPressed() {
-    switch (keyCode) {
-        case UP_ARROW:
-            if (snake.VelY != 1) {
-                snake.VelX = 0;
-                snake.VelY = -1;
-            }
-            break;
-        case DOWN_ARROW:
-            if (snake.VelY != -1) {
-                snake.VelX = 0;
-                snake.VelY = 1;
-            }
-            break;
-        case LEFT_ARROW:
-            if (snake.VelX != 1) {
-                snake.VelX = -1;
-                snake.VelY = 0;
-            }
-            break;
-        case RIGHT_ARROW:
-            if (snake.VelX != -1) {
-                snake.VelX = 1;
-                snake.VelY = 0;
-            }
-            break;
-        case ENTER:
-            if (gameover)
-                location.reload();
-            break;
+    if (keysPressed.length < 2) {
+        keysPressed.push(keyCode);
+    }
+    if (keyCode == ENTER && gameover) {
+        location.reload();
     }
 }
